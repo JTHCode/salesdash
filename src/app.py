@@ -70,7 +70,11 @@ def main() -> None:
     time_series.render(filtered, metric_column=filters.metric_column)
     st.divider()
 
-    geographic_map.render(filtered)
+    geographic_map.render(
+        filtered,
+        metric_column=filters.metric_column,
+        metric_label=filters.metric_label,
+    )
     st.divider()
 
     forecasting_viz.render(filtered)

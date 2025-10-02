@@ -136,6 +136,44 @@ def aggregate_time_series(
 
 
 @_cache_decorator()
+def get_geographic_data(df: pd.DataFrame) -> list[dict[str, Any]]:
+    """Aggregate sales metrics by country for geographic visualizations."""
+    if df is None or df.empty or "Country" not in df:
+        return []
+
+    aggregations: dict[str, str] = {}
+    if "Sales" in df.columns:
+        aggregations["Sales"] = "sum"
+    if "Total Profit/Loss" in df.columns:
+        aggregations["Total Profit/Loss"] = "sum"
+    if "Customer ID" in df.columns:
+        aggregations["Customer ID"] = "nunique"
+    if "Quantity Ordered" in df.columns:
+        aggregations["Quantity Ordered"] = "sum"
+
+    if not aggregations:
+        return []
+
+    geo = (
+        df.groupby("Country")
+        .agg(aggregations)
+        .reset_index()
+    )
+
+    if "Sales" in geo.columns and "Total Profit/Loss" in geo.columns:
+        geo["Profit Margin"] = geo.apply(
+            lambda row: _safe_divide(row["Total Profit/Loss"], row["Sales"]) * 100
+            if row["Sales"]
+            else 0.0,
+            axis=1,
+        )
+    else:
+        geo["Profit Margin"] = 0.0
+
+    return geo.to_dict("records")
+
+
+@_cache_decorator()
 def calculate_kpis(
     current_df: pd.DataFrame,
     comparison_df: Optional[pd.DataFrame] = None,
@@ -184,4 +222,5 @@ __all__ = [
     "aggregate_time_series",
     "build_comparison_window",
     "calculate_kpis",
+    "get_geographic_data",
 ]
