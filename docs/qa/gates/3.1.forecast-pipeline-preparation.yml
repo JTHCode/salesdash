@@ -1,0 +1,41 @@
+schema: 1
+story: '3.1'
+story_title: 'Story 3.1: Forecast Pipeline Preparation'
+gate: PASS
+status_reason: 'Moving-average pipeline now satisfies AC1 and supporting tests confirm the method metadata.'
+reviewer: 'Quinn (Test Architect)'
+updated: '2025-10-03T01:03:21Z'
+
+top_issues: []
+waiver:
+  active: false
+quality_score: 100
+expires: '2025-10-17T00:00:00Z'
+
+evidence:
+  tests_reviewed: 24
+  risks_identified: 0
+  trace:
+    ac_covered: [1, 2, 3, 4]
+    ac_gaps: []
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: 'Artifact contains aggregated metrics only; no sensitive exposure.'
+  performance:
+    status: PASS
+    notes: 'Rolling moving-average and cache usage remain lightweight.'
+  reliability:
+    status: PASS
+    notes: 'Loader regenerates on demand and schema checks guard corruption.'
+  maintainability:
+    status: PASS
+    notes: 'Model selection aligns with documented requirements; tests cover metadata.'
+
+recommendations:
+  immediate: []
+  future:
+    - action: 'Add an integration smoke test that loads the forecast artifact within Streamlit.'
+      refs:
+        - 'tests/'

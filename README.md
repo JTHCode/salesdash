@@ -82,6 +82,14 @@ The placeholder app confirms that:
 - Sidebar filters (date range, countries, status) drive the filtered view.
 - KPI, time-series, geographic, and forecasting sections render placeholders that future stories will replace with production components.
 
+## Offline Forecast Pipeline
+The forecasting workflow runs offline so the Streamlit app can reuse cached results without retraining.
+
+1. `python -m src.services.forecasting_service` regenerates the artifact at `data/processed/forecast_sales.csv`.
+2. The pipeline aggregates monthly `Sales`, applies a rolling moving-average model (default 3-month window) for a 12-interval horizon and records 95% confidence bounds plus training metadata.
+3. Output columns include actual and forecast rows alongside `method`, `horizon`, `confidence_level`, `evaluation_metric`, `evaluation_value`, and training window timestamps for downstream validation.
+4. Consumers should call `services.load_forecast_results(force_refresh=True)` or rerun the generator via `python -m src.services.forecasting_service` before visualisation updates, then run `pytest -k forecasting` and `streamlit run src/app.py` for manual verification.
+
 ---
 
 ## Smoke Testing
@@ -142,3 +150,6 @@ For bugs or enhancement ideas:
 - Include screenshots or Streamlit log excerpts when applicable.
 
 Happy analysing!
+
+
+

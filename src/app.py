@@ -1,5 +1,15 @@
+
 """Streamlit entry point for the sales analytics dashboard prototype."""
 from __future__ import annotations
+import sys
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = ROOT_DIR.parent
+for candidate in (str(PROJECT_ROOT), str(ROOT_DIR)):
+    if candidate not in sys.path:
+        sys.path.insert(0, candidate)
+
 
 try:
     import streamlit as st
@@ -77,7 +87,7 @@ def main() -> None:
     )
     st.divider()
 
-    forecasting_viz.render(filtered)
+    forecasting_viz.render(filtered, filter_state=filters)
 
     st.sidebar.markdown("---")
     st.sidebar.info(
